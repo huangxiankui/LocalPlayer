@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/start_net_music"
+        android:text="@string/net_music"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_below="@id/start_net_music"
+        android:layout_height="wrap_content"
+        android:id="@+id/start_net_video"
+        android:text="@string/net_video"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/start_local_music"
+        android:layout_below="@id/start_net_video"
+        android:text="@string/local_musci"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/start_local_music"
+        android:id="@+id/start_local_video"
+        android:text="@string/local_video"/>
+</RelativeLayout>

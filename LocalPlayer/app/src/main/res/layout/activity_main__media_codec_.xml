@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/start_mediacodec_pcmtoaac"
+        android:text="@string/start_mediacodec_pcmtoaac"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/start_mediacodec_pcmtoaac"
+        android:id="@+id/start_mediacodec_mp3topcm"
+        android:text="@string/start_mediacodec_mp3topcm"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/start_mediacodec_pcmtoaac"
+        android:id="@+id/start_mediacodec_yuvtoh264"
+        android:text="@string/start_mediacodec_yuvtomp4"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/start_mediacodec_yuvtoh264"
+        android:id="@+id/start_mediacodec_others_yuvtoh264"
+        android:text="@string/start_mediacodec_others_yuvtoh264"/>
+
+</RelativeLayout>

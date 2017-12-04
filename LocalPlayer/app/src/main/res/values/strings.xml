@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">LocalPlayer</string>
+    <string name="title_activity_first">FirstActivity</string>
+    <string name="local_video">播放本地视频</string>
+    <string name="net_music">播放网络音乐</string>
+    <string name="net_video">播放网络视频</string>
+    <string name="local_musci">播放本地音乐</string>
+    <string name="about_mediaplay">Mediaplay相关</string>
+    <string name="about_mediacodec">MediaCodec相关</string>
+    <string name="start_mediacodec_pcmtoaac">PCM->AAC</string>
+    <string name="start_mediacodec_mp3topcm">MP3->PCM</string>
+    <string name="start_mediacodec_yuvtomp4">YUV->H264</string>
+    <string name="start_mediacodec_others_yuvtoh264">别人的YUV->H264编码</string>
+
+</resources>
