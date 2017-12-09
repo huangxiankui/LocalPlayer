@@ -1,10 +1,14 @@
 package local.asuper.localplayer;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import java.io.File;
 
 import local.asuper.localplayer.mediacodec.Main_MediaCodec_Activity;
 import local.asuper.localplayer.mediaplayer.MediaPlayActivity;
@@ -39,5 +43,16 @@ public class FirstShowActivity extends AppCompatActivity implements View.OnClick
             default:
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        scanFile(getApplicationContext(), "/sdcard");
+        super.onDestroy();
+    }
+    public static void scanFile(Context context, String filePath) {
+        Intent scanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        scanIntent.setData(Uri.fromFile(new File(filePath)));
+        context.sendBroadcast(scanIntent);
     }
 }

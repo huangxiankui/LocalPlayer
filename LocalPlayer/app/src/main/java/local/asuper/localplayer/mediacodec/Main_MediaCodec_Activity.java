@@ -22,7 +22,7 @@ import local.asuper.localplayer.utils.FileUtils;
 
 public class Main_MediaCodec_Activity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "hxk_Main_MediaCodec";
-    Button mPcmtoAACBt, mMP3toPCMBt, mYUVtoH264Bt, mOthersYUVtoH264Bt;
+    Button mPcmtoAACBt, mMP3toPCMBt, mYUVtoH264Bt, mOthersYUVtoH264Bt,mMP4ExtractorBt;
     AACAudioEncoder aacencoder;
     H264VideoEncoder h264encoder;
 
@@ -34,10 +34,12 @@ public class Main_MediaCodec_Activity extends AppCompatActivity implements View.
         mMP3toPCMBt = (Button) findViewById(R.id.start_mediacodec_mp3topcm);
         mYUVtoH264Bt = (Button) findViewById(R.id.start_mediacodec_yuvtoh264);
         mOthersYUVtoH264Bt = (Button) findViewById(R.id.start_mediacodec_others_yuvtoh264);
+        mMP4ExtractorBt = (Button) findViewById(R.id.start_mp4extractor_h264_aac);
         mPcmtoAACBt.setOnClickListener(this);
         mMP3toPCMBt.setOnClickListener(this);
         mYUVtoH264Bt.setOnClickListener(this);
         mOthersYUVtoH264Bt.setOnClickListener(this);
+        mMP4ExtractorBt.setOnClickListener(this);
     }
 
     @Override
@@ -50,7 +52,7 @@ public class Main_MediaCodec_Activity extends AppCompatActivity implements View.
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.start_mediacodec_pcmtoaac:
+            case R.id.start_mediacodec_pcmtoaac://pcm编码成aac
                 aacencoder = new AACAudioEncoder(16000, 1);
                 File file = new File(Environment.getExternalStorageDirectory(),
                         "new16k.aac");
@@ -84,9 +86,9 @@ public class Main_MediaCodec_Activity extends AppCompatActivity implements View.
                     e.printStackTrace();
                 }
                 break;
-            case R.id.start_mediacodec_mp3topcm:
+            case R.id.start_mediacodec_mp3topcm://MP3解码成pcm
                 break;
-            case R.id.start_mediacodec_yuvtoh264:
+            case R.id.start_mediacodec_yuvtoh264://yuv编码成h264文件
                 h264encoder = new H264VideoEncoder("video/avc", 256000, 24, 1, 320, 180);
                 try {
                     h264encoder.init();
@@ -126,6 +128,12 @@ public class Main_MediaCodec_Activity extends AppCompatActivity implements View.
                 break;
             case R.id.start_mediacodec_others_yuvtoh264:
                 startActivity(new Intent(this, OthersActivity.class));
+
+            case R.id.start_mp4extractor_h264_aac://mp4 分离器 分离成h264  aac
+                String sdcardpath = Environment.getExternalStorageDirectory().getPath();
+                Log.d(TAG,"sdcardpath:"+sdcardpath);
+                MP4VideoExtractor.exactorMedia(sdcardpath);
+                break;
             default:
                 break;
         }

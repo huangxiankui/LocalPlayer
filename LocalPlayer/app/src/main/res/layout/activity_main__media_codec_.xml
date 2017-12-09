@@ -26,5 +26,11 @@
         android:layout_below="@id/start_mediacodec_yuvtoh264"
         android:id="@+id/start_mediacodec_others_yuvtoh264"
         android:text="@string/start_mediacodec_others_yuvtoh264"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/start_mediacodec_yuvtoh264"
+        android:id="@+id/start_mp4extractor_h264_aac"
+        android:text="@string/start_mp4extractor_h264_aac"/>
 
 </RelativeLayout>
