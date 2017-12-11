@@ -42,9 +42,9 @@ public class MP4VideoExtractor {
             //oxford.mp4 视频 h264/baseline  音频 aac/lc 44.1k  2 channel 128kb/s
             mediaExtractor.setDataSource(sdcard_path + "/oxford.mp4");
             //test3.mp4  视频h264 high   音频aac
-        //        mediaExtractor.setDataSource(sdcard_path + "/test3.mp4");
-                //test2.mp4 视频mpeg4  音频MP3
-          //  mediaExtractor.setDataSource(sdcard_path + "/test2.mp4");
+            //        mediaExtractor.setDataSource(sdcard_path + "/test3.mp4");
+            //test2.mp4 视频mpeg4  音频MP3
+            //  mediaExtractor.setDataSource(sdcard_path + "/test2.mp4");
             //信道总数
             int trackCount = mediaExtractor.getTrackCount();
             Log.d(TAG, "trackCount:" + trackCount);
