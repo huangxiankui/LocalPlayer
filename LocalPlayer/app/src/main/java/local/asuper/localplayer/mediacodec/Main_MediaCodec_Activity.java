@@ -16,15 +16,18 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import local.asuper.localplayer.R;
+import local.asuper.localplayer.camera.Camear_MainActivity;
+import local.asuper.localplayer.mediacodec.others.MediaExtractorManager;
 import local.asuper.localplayer.mediacodec.others.OthersActivity;
 import local.asuper.localplayer.mediaplayer.MediaPlayActivity;
 import local.asuper.localplayer.utils.FileUtils;
 
 public class Main_MediaCodec_Activity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "hxk_Main_MediaCodec";
-    Button mPcmtoAACBt, mMP3toPCMBt, mYUVtoH264Bt, mOthersYUVtoH264Bt,mMP4ExtractorBt;
+    Button mPcmtoAACBt, mMP3toPCMBt, mYUVtoH264Bt, mOthersYUVtoH264Bt, mMP4ExtractorBt, mstart_YUV_H264Bt;
     AACAudioEncoder aacencoder;
     H264VideoEncoder h264encoder;
+    private MediaExtractorManager mMediaExtractorManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +38,14 @@ public class Main_MediaCodec_Activity extends AppCompatActivity implements View.
         mYUVtoH264Bt = (Button) findViewById(R.id.start_mediacodec_yuvtoh264);
         mOthersYUVtoH264Bt = (Button) findViewById(R.id.start_mediacodec_others_yuvtoh264);
         mMP4ExtractorBt = (Button) findViewById(R.id.start_mp4extractor_h264_aac);
+        mstart_YUV_H264Bt = (Button) findViewById(R.id.start_YUV_H264);
         mPcmtoAACBt.setOnClickListener(this);
         mMP3toPCMBt.setOnClickListener(this);
         mYUVtoH264Bt.setOnClickListener(this);
         mOthersYUVtoH264Bt.setOnClickListener(this);
         mMP4ExtractorBt.setOnClickListener(this);
+        mstart_YUV_H264Bt.setOnClickListener(this);
+        mMediaExtractorManager = new MediaExtractorManager();
     }
 
     @Override
@@ -130,9 +136,14 @@ public class Main_MediaCodec_Activity extends AppCompatActivity implements View.
                 startActivity(new Intent(this, OthersActivity.class));
 
             case R.id.start_mp4extractor_h264_aac://mp4 分离器 分离成h264  aac
+
+                //  mMediaExtractorManager.exactorMedia();
                 String sdcardpath = Environment.getExternalStorageDirectory().getPath();
-                Log.d(TAG,"sdcardpath:"+sdcardpath);
+                Log.d(TAG, "sdcardpath:" + sdcardpath);
                 MP4VideoExtractor.exactorMedia(sdcardpath);
+                break;
+            case R.id.start_YUV_H264:
+                startActivity(new Intent(this, Camear_MainActivity.class));
                 break;
             default:
                 break;

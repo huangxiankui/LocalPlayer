@@ -2,7 +2,6 @@ package local.asuper.localplayer.mediacodec;
 
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
-import android.media.MediaRecorder;
 import android.util.Log;
 
 import java.io.File;
@@ -13,13 +12,21 @@ import java.nio.ByteBuffer;
 /**
  * mp4extractor 分离器
  * 分离mp4 成h264 和 aac
- * 分别生成h264和aac文件
+ * 分别生成h264和aac文件(无adts头)
+ * <p>
+ * android的无法分离高profile的h264文件，这里分离的是Baseline（profile）
+ * <p>
+ * 合成的时候，MP4,flv,rtmp都不需要adts头
+ * 合成的时候：hls,rtp,ts需要adts头
+ * 所以这里分离出来的aac是没有adts头的，mediainfo读取到的音频信息是从moov中box中读取的
  */
 
 
 public class MP4VideoExtractor {
     private static final String TAG = "MP4VideoExtractor";
-//test3.mp4  h264,aac
+
+
+    //test3.mp4  h264,aac
     public static void exactorMedia(String sdcard_path) {
         FileOutputStream videoOutputStream = null;
         FileOutputStream audioOutputStream = null;
@@ -32,7 +39,12 @@ public class MP4VideoExtractor {
             videoOutputStream = new FileOutputStream(videoFile);
             audioOutputStream = new FileOutputStream(audioFile);
             //输入文件,也可以是网络文件
-            mediaExtractor.setDataSource(sdcard_path + "/test3.mp4");
+            //oxford.mp4 视频 h264/baseline  音频 aac/lc 44.1k  2 channel 128kb/s
+            mediaExtractor.setDataSource(sdcard_path + "/oxford.mp4");
+            //test3.mp4  视频h264 high   音频aac
+        //        mediaExtractor.setDataSource(sdcard_path + "/test3.mp4");
+                //test2.mp4 视频mpeg4  音频MP3
+          //  mediaExtractor.setDataSource(sdcard_path + "/test2.mp4");
             //信道总数
             int trackCount = mediaExtractor.getTrackCount();
             Log.d(TAG, "trackCount:" + trackCount);
@@ -51,7 +63,7 @@ public class MP4VideoExtractor {
                 }
             }
 
-            ByteBuffer byteBuffer = ByteBuffer.allocate(10 * 1024 * 1024);
+            ByteBuffer byteBuffer = ByteBuffer.allocate(500 * 1024);
             //切换到视频信道
             mediaExtractor.selectTrack(videoTrackIndex);
             while (true) {
@@ -63,7 +75,7 @@ public class MP4VideoExtractor {
                 //保存视频信道信息
                 byte[] buffer = new byte[readSampleCount];
                 byteBuffer.get(buffer);
-                videoOutputStream.write(buffer);
+                videoOutputStream.write(buffer);//buffer 写入到 videooutputstream中
                 byteBuffer.clear();
                 mediaExtractor.advance();
             }
@@ -78,7 +90,13 @@ public class MP4VideoExtractor {
                 //保存音频信息
                 byte[] buffer = new byte[readSampleCount];
                 byteBuffer.get(buffer);
-                audioOutputStream.write(buffer);
+                /**********************add 用来为aac添加adts头**************************/
+                byte[] audiobuffer = new byte[readSampleCount + 7];
+                System.arraycopy(addADTStoPacket(), 0, audiobuffer, 0, 7);
+                System.arraycopy(buffer, 0, audiobuffer, 7, readSampleCount);
+                audioOutputStream.write(audiobuffer);
+                /***************************************close**************************/
+                //  audioOutputStream.write(buffer);
                 byteBuffer.clear();
                 mediaExtractor.advance();
             }
@@ -90,9 +108,79 @@ public class MP4VideoExtractor {
             mediaExtractor.release();
             try {
                 videoOutputStream.close();
+                audioOutputStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
+
+    private static byte[] addADTStoPacket() {
+        byte[] packet = new byte[7];
+        int packetLen = packet.length;
+        int profile = 2; // AAC LC
+        int freqIdx = getFreqIdx(44100);
+        int chanCfg = 2; // CPE
+        // fill in ADTS data
+        packet[0] = (byte) 0xFF;
+        packet[1] = (byte) 0xF1;//发现oppo R11以上版本不支持mpeg2，所以0xf9换成0xf1
+        packet[2] = (byte) (((profile - 1) << 6) + (freqIdx << 2) + (chanCfg >> 2));
+        packet[3] = (byte) (((chanCfg & 3) << 6) + (packetLen >> 11));
+        packet[4] = (byte) ((packetLen & 0x7FF) >> 3);
+        packet[5] = (byte) (((packetLen & 7) << 5) + 0x1F);
+        packet[6] = (byte) 0xFC;
+        return packet;
+    }
+
+    private static int getFreqIdx(int sampleRate) {
+        int freqIdx;
+
+        switch (sampleRate) {
+            case 96000:
+                freqIdx = 0;
+                break;
+            case 88200:
+                freqIdx = 1;
+                break;
+            case 64000:
+                freqIdx = 2;
+                break;
+            case 48000:
+                freqIdx = 3;
+                break;
+            case 44100:
+                freqIdx = 4;
+                break;
+            case 32000:
+                freqIdx = 5;
+                break;
+            case 24000:
+                freqIdx = 6;
+                break;
+            case 22050:
+                freqIdx = 7;
+                break;
+            case 16000:
+                freqIdx = 8;
+                break;
+            case 12000:
+                freqIdx = 9;
+                break;
+            case 11025:
+                freqIdx = 10;
+                break;
+            case 8000:
+                freqIdx = 11;
+                break;
+            case 7350:
+                freqIdx = 12;
+                break;
+            default:
+                freqIdx = 8;
+                break;
+        }
+
+        return freqIdx;
+    }
+
 }

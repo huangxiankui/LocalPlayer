@@ -12,5 +12,7 @@
     <string name="start_mediacodec_yuvtomp4">YUV->H264</string>
     <string name="start_mediacodec_others_yuvtoh264">别人的YUV->H264编码</string>
     <string name="start_mp4extractor_h264_aac">mp4分离器:mp4extractor_aac_h264</string>
+    <string name="title_activity_camear__main">Camear_MainActivity</string>
+    <string name="start_YUV_H264">获取camera数据YUV编码h264</string>
 
 </resources>
