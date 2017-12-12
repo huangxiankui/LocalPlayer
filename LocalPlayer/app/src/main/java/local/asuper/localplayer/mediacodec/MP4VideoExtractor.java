@@ -90,11 +90,11 @@ public class MP4VideoExtractor {
                 //保存音频信息
                 byte[] buffer = new byte[readSampleCount];
                 byteBuffer.get(buffer);
-                /**********************add 用来为aac添加adts头**************************/
-                byte[] audiobuffer = new byte[readSampleCount + 7];
-                System.arraycopy(addADTStoPacket(), 0, audiobuffer, 0, 7);
-                System.arraycopy(buffer, 0, audiobuffer, 7, readSampleCount);
-                audioOutputStream.write(audiobuffer);
+                /************************* 用来为aac添加adts头**************************/
+                byte[] aacaudiobuffer = new byte[readSampleCount + 7];
+                addADTStoPacket(aacaudiobuffer, readSampleCount + 7);
+                System.arraycopy(buffer, 0, aacaudiobuffer, 7, readSampleCount);
+                audioOutputStream.write(aacaudiobuffer);
                 /***************************************close**************************/
                 //  audioOutputStream.write(buffer);
                 byteBuffer.clear();
@@ -106,6 +106,7 @@ public class MP4VideoExtractor {
         } finally {
             Log.d(TAG, "mediaExtractor.release!\n");
             mediaExtractor.release();
+            mediaExtractor = null;
             try {
                 videoOutputStream.close();
                 audioOutputStream.close();
@@ -115,22 +116,25 @@ public class MP4VideoExtractor {
         }
     }
 
-    private static byte[] addADTStoPacket() {
-        byte[] packet = new byte[7];
-        int packetLen = packet.length;
+    /** 这里之前遇到一个坑，以为这个packetLen是adts头的长度，也就是7，仔细看了下代码，发现这个不是adts头的长度，而是一帧音频的长度
+     * @param packet    一帧数据（包含adts头长度）
+     * @param packetLen 一帧数据（包含adts头）的长度
+     */
+    private static void addADTStoPacket(byte[] packet, int packetLen) {
         int profile = 2; // AAC LC
         int freqIdx = getFreqIdx(44100);
         int chanCfg = 2; // CPE
+
         // fill in ADTS data
         packet[0] = (byte) 0xFF;
-        packet[1] = (byte) 0xF1;//发现oppo R11以上版本不支持mpeg2，所以0xf9换成0xf1
+        packet[1] = (byte) 0xF9;
         packet[2] = (byte) (((profile - 1) << 6) + (freqIdx << 2) + (chanCfg >> 2));
         packet[3] = (byte) (((chanCfg & 3) << 6) + (packetLen >> 11));
         packet[4] = (byte) ((packetLen & 0x7FF) >> 3);
         packet[5] = (byte) (((packetLen & 7) << 5) + 0x1F);
         packet[6] = (byte) 0xFC;
-        return packet;
     }
+
 
     private static int getFreqIdx(int sampleRate) {
         int freqIdx;

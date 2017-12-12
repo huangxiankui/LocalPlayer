@@ -132,12 +132,14 @@ public class AACAudioEncoder {
      * Note the packetLen must count in the ADTS header itself.
      **/
     private void addADTStoPacket(byte[] packet, int packetLen) {
+        Log.d(TAG, "packetLen:" + packetLen);
         int profile = 2; // AAC LC
         int freqIdx = getFreqIdx(mSampleRate);
         int chanCfg = mChannelCount; // CPE
+
         // fill in ADTS data
         packet[0] = (byte) 0xFF;
-        packet[1] = (byte) 0xF1;//发现oppo R11以上版本不支持mpeg2，所以0xf9换成0xf1
+        packet[1] = (byte) 0xF9;
         packet[2] = (byte) (((profile - 1) << 6) + (freqIdx << 2) + (chanCfg >> 2));
         packet[3] = (byte) (((chanCfg & 3) << 6) + (packetLen >> 11));
         packet[4] = (byte) ((packetLen & 0x7FF) >> 3);

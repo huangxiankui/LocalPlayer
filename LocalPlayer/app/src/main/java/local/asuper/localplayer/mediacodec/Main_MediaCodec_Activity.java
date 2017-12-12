@@ -64,8 +64,8 @@ public class Main_MediaCodec_Activity extends AppCompatActivity implements View.
                         "new16k.aac");
 
                 String aacfilepath = file.getAbsolutePath();
-                byte[] buffer = new byte[1024 * 2];
-                byte[] outBuffer = new byte[1024 * 2];
+                byte[] buffer = new byte[1024];
+                byte[] outBuffer = new byte[1024];
                 InputStream in = null;
                 try {
                     File file1 = new File(Environment.getExternalStorageDirectory(),
@@ -137,7 +137,6 @@ public class Main_MediaCodec_Activity extends AppCompatActivity implements View.
 
             case R.id.start_mp4extractor_h264_aac://mp4 分离器 分离成h264  aac
 
-                //  mMediaExtractorManager.exactorMedia();
                 String sdcardpath = Environment.getExternalStorageDirectory().getPath();
                 Log.d(TAG, "sdcardpath:" + sdcardpath);
                 MP4VideoExtractor.exactorMedia(sdcardpath);
